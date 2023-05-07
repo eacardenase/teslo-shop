@@ -3,6 +3,7 @@ import {
   Injectable,
   InternalServerErrorException,
   Logger,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -32,14 +33,19 @@ export class ProductsService {
     }
   }
 
+  // TODO: Add pagination
   async findAll() {
     return this.productRepository.find();
   }
 
   async findOne(id: string) {
-    const product = await this.productRepository.findBy({
+    const product = await this.productRepository.findOneBy({
       id: id,
     });
+
+    if (!product) {
+      throw new NotFoundException(`Product with id '${id}' not found`);
+    }
 
     return product;
   }
