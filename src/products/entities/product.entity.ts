@@ -11,12 +11,14 @@ export class Product {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('text', {
+  @Column({
+    type: 'text',
     unique: true,
   })
   title: string;
 
-  @Column('float', {
+  @Column({
+    type: 'float',
     default: 0,
   })
   price: number;
@@ -50,7 +52,13 @@ export class Product {
   })
   gender: string;
 
-  // tags
+  @Column({
+    type: 'text',
+    array: true,
+    default: [],
+  })
+  tags: string[];
+
   // images
 
   @BeforeInsert()
