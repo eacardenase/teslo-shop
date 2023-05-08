@@ -11,7 +11,7 @@ import { validate as isUUID } from 'uuid';
 
 import { UpdateProductDto } from './dto/update-product.dto';
 import { CreateProductDto } from './dto/create-product.dto';
-import { Product } from './entities/product.entity';
+import { Product, ProductImage } from './entities';
 import { PaginationDTO } from 'src/common/dtos/pagination.dto';
 
 @Injectable()
@@ -21,12 +21,23 @@ export class ProductsService {
   constructor(
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
+    @InjectRepository(ProductImage)
+    private readonly productImageRepository: Repository<ProductImage>,
   ) {}
 
   async create(createProductDto: CreateProductDto): Promise<Product> {
     try {
-      const product = this.productRepository.create(createProductDto); // only create an instance of the product
+      const { images = [], ...productDetails } = createProductDto;
 
+      // typeorm infers product property on productImageRepository
+      const product = this.productRepository.create({
+        ...productDetails,
+        images: images.map((image) =>
+          this.productImageRepository.create({ url: image }),
+        ),
+      }); // only create an instance of  the product
+
+      // stores both product and images
       await this.productRepository.save(product);
 
       return product;
@@ -79,6 +90,7 @@ export class ProductsService {
     const product = await this.productRepository.preload({
       id,
       ...updateProductDto,
+      images: [],
     });
 
     if (!product) {
