@@ -52,7 +52,9 @@ export class ProductsService {
     return this.productRepository.find({
       take: limit,
       skip: offset,
-      // TODO: entity relations
+      relations: {
+        images: true, // return data related to the entity
+      },
     });
   }
 
@@ -63,8 +65,15 @@ export class ProductsService {
       product = await this.productRepository.findOneBy({
         id: term,
       });
+
+      // Alternative to use 'eager: true' on product entity
+
+      // product = await this.productRepository.findOne({
+      //   where: { id: term },
+      //   relations: { images: true },
+      // });
     } else {
-      const queryBuilder = this.productRepository.createQueryBuilder();
+      const queryBuilder = this.productRepository.createQueryBuilder('product');
 
       product = await queryBuilder
         // LOWER() is a postgres function
@@ -72,6 +81,7 @@ export class ProductsService {
           title: term,
           slug: term,
         })
+        .leftJoinAndSelect('product.images', 'prodImages') // it's required when eager relations cannot be used
         .getOne();
     }
 
