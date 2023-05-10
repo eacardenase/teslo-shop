@@ -25,6 +25,8 @@ export class ProductImage {
   @UpdateDateColumn()
   updatedDate: Date;
 
-  @ManyToOne(() => Product, (product) => product.images)
+  @ManyToOne(() => Product, (product) => product.images, {
+    onDelete: 'CASCADE',
+  })
   product: Product;
 }
