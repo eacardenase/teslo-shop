@@ -124,10 +124,6 @@ export class ProductsService {
         product.images = images.map((image) =>
           this.productImageRepository.create({ url: image }),
         );
-      } else {
-        product.images = await this.productImageRepository.findBy({
-          product: { id },
-        });
       }
 
       await queryRunner.manager.save(product);
@@ -135,7 +131,7 @@ export class ProductsService {
       await queryRunner.commitTransaction(); // effectively saves the changes if both transactions were successful
       await queryRunner.release();
 
-      return product;
+      return this.findOne(id);
     } catch (error) {
       await queryRunner.rollbackTransaction(); // rollback any changes
       await queryRunner.release();
