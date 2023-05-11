@@ -20,9 +20,14 @@ export class User {
   password: string;
 
   @Column('text')
-  fullName: string;
+  firstName: string;
 
-  @Column('bool')
+  @Column('text')
+  lastName: string;
+
+  @Column('bool', {
+    default: true,
+  })
   isActive: boolean;
 
   @Column('text', {
