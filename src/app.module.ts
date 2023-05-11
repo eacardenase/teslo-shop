@@ -10,6 +10,7 @@ import { CommonModule } from './common/common.module';
 import { SeedModule } from './seed/seed.module';
 import { FilesModule } from './files/files.module';
 import { EnvConfiguration } from './config/app.config';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -39,6 +40,8 @@ import { EnvConfiguration } from './config/app.config';
     SeedModule,
 
     FilesModule,
+
+    AuthModule,
   ],
 })
 export class AppModule {}
