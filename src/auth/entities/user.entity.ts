@@ -16,7 +16,9 @@ export class User {
   })
   email: string;
 
-  @Column('text')
+  @Column('text', {
+    select: false, // omits when querying user info
+  })
   password: string;
 
   @Column('text')
