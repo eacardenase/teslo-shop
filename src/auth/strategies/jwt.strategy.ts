@@ -24,9 +24,9 @@ export class JWTStrategy extends PassportStrategy(Strategy) {
 
   // custom validation called if valid jwt
   async validate(payload: JWTPayload): Promise<User> {
-    const { email } = payload;
+    const { id } = payload;
 
-    const user = await this.userRepository.findOneBy({ email });
+    const user = await this.userRepository.findOneBy({ id });
 
     if (!user) {
       throw new UnauthorizedException('Token not valid.');
