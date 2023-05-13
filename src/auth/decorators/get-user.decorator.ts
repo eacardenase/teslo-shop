@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 
 export const GetUser = createParamDecorator(
-  (data, context: ExecutionContext) => {
+  (data: string, context: ExecutionContext) => {
     const request = context.switchToHttp().getRequest();
     const { user } = request;
 
@@ -13,6 +13,6 @@ export const GetUser = createParamDecorator(
       throw new InternalServerErrorException('User not found (request)');
     }
 
-    return user;
+    return !data ? user : user[data];
   },
 );
