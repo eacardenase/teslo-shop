@@ -4,11 +4,15 @@ import { ProductsController } from './products.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { Product, ProductImage } from './entities';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   controllers: [ProductsController],
   providers: [ProductsService],
-  imports: [TypeOrmModule.forFeature([Product, ProductImage])], // product entity
+  imports: [
+    TypeOrmModule.forFeature([Product, ProductImage]), // product entity
+    AuthModule,
+  ],
   exports: [
     ProductsService,
     TypeOrmModule, // if we want to use crud operations outside this module

@@ -20,10 +20,10 @@ export class UserRoleGuard implements CanActivate {
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request = context.switchToHttp().getRequest();
     const user = request.user as User;
-    const validRoles: string[] = this.reflector.get(
-      META_ROLES,
+    const validRoles: string[] = this.reflector.getAllAndOverride(META_ROLES, [
       context.getHandler(),
-    );
+      context.getClass(),
+    ]);
 
     if (!validRoles || validRoles.length === 0) {
       return true;
