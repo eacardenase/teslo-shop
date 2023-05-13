@@ -4,9 +4,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+
+import { Product } from 'src/products/entities';
 
 @Entity('users')
 export class User {
@@ -39,6 +42,9 @@ export class User {
     default: ['user'],
   })
   roles: string[];
+
+  @OneToMany(() => Product, (product) => product.user)
+  products?: Product[];
 
   @CreateDateColumn()
   createdDate: Date;
