@@ -9,6 +9,7 @@ import {
 import { Observable } from 'rxjs';
 
 import { User } from 'src/auth/entities/user.entity';
+import { META_ROLES } from 'src/auth/decorators/role-protected.decorator';
 
 @Injectable()
 export class UserRoleGuard implements CanActivate {
@@ -20,7 +21,7 @@ export class UserRoleGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const user = request.user as User;
     const validRoles: string[] = this.reflector.get(
-      'roles',
+      META_ROLES,
       context.getHandler(),
     );
 
@@ -39,10 +40,7 @@ export class UserRoleGuard implements CanActivate {
     }
 
     throw new ForbiddenException(
-      `User ${user.firstName} ${
-        user.lastName
-      } needs a valid role to access this resource.
-      Valid roles: ${validRoles.join(', ')}`,
+      `User ${user.firstName} ${user.lastName} needs a valid role to access this resource. Valid roles: [${validRoles}].`,
     );
   }
 }
