@@ -13,7 +13,7 @@ import { AuthService } from './auth.service';
 import { CreateUserDTO, LoginUserDTO } from './dto';
 import { GetUser, RawHeaders, RoleProtected } from './decorators';
 import { User } from './entities/user.entity';
-import { UserRoleGuard } from './guards/user-role/user-role.guard';
+import { UserRoleGuard } from './guards/user-role.guard';
 import { ValidRoles } from './interfaces';
 
 @Controller('auth')
