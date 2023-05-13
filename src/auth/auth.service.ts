@@ -48,7 +48,7 @@ export class AuthService {
 
     const user = await this.userRepository.findOne({
       where: { email },
-      select: { id: true, email: true, password: true },
+      select: { id: true, email: true },
     });
 
     if (!user || !bcrypt.compareSync(password, user.password)) {
@@ -56,6 +56,16 @@ export class AuthService {
     }
 
     return { ...user, token: this.getJWT({ id: user.id }) };
+  }
+
+  checkAuthStatus(user: User) {
+    const newJWT = this.getJWT({ id: user.id });
+
+    return {
+      id: user.id,
+      email: user.email,
+      token: newJWT,
+    };
   }
 
   private getJWT(payload: JWTPayload): string {

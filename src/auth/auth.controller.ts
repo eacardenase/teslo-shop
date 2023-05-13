@@ -22,6 +22,12 @@ export class AuthController {
     return this.authService.login(loginUserDTO);
   }
 
+  @Get('check-status')
+  @Auth()
+  chechAuthStatus(@GetUser() user: User) {
+    return this.authService.checkAuthStatus(user);
+  }
+
   @Get('private')
   @UseGuards(AuthGuard()) // required
   testingPrivateRoute(
