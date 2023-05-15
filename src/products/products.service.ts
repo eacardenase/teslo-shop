@@ -12,7 +12,7 @@ import { validate as isUUID } from 'uuid';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { CreateProductDto } from './dto/create-product.dto';
 import { Product, ProductImage } from './entities';
-import { PaginationDTO } from 'src/common/dtos/pagination.dto';
+import { PaginationDto } from 'src/common/dtos/pagination.dto';
 import { User } from 'src/auth/entities/user.entity';
 
 @Injectable()
@@ -52,7 +52,7 @@ export class ProductsService {
     }
   }
 
-  async findAll(paginationDTO: PaginationDTO): Promise<Product[]> {
+  async findAll(paginationDTO: PaginationDto): Promise<Product[]> {
     const { limit = 10, offset = 0 } = paginationDTO;
 
     return this.productRepository.find({

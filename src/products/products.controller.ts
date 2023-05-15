@@ -14,7 +14,7 @@ import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { PaginationDTO } from 'src/common/dtos/pagination.dto';
+import { PaginationDto } from 'src/common/dtos/pagination.dto';
 import { Product } from './entities/product.entity';
 
 import { Auth, GetUser } from 'src/auth/decorators';
@@ -50,7 +50,7 @@ export class ProductsController {
 
   @Get()
   @Auth(ValidRoles.admin) // route level auth
-  findAll(@Query() paginationDTO: PaginationDTO): Promise<Product[]> {
+  findAll(@Query() paginationDTO: PaginationDto): Promise<Product[]> {
     return this.productsService.findAll(paginationDTO);
   }
 
