@@ -39,6 +39,22 @@ export class MessagesGateway
 
   @SubscribeMessage('message-from-client')
   handleMessageFromClient(client: Socket, payload: NewMessageDto) {
-    console.log(client.id, payload);
+    // Emits to all clients connected
+    this.webSocketServer.emit('message-from-server', {
+      fullName: 'Soy io',
+      message: payload.message || 'No Message',
+    });
+
+    // Emits only to the client connected
+    // client.emit('message-from-server', {
+    //   fullName: 'Soy io',
+    //   message: payload.message || 'No Message',
+    // });
+
+    // Emits to all but client connected
+    // client.broadcast.emit('message-from-server', {
+    //   fullName: 'Soy io',
+    //   message: payload.message || 'No Message',
+    // });
   }
 }
