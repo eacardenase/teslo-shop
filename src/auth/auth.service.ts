@@ -3,6 +3,7 @@ import {
   Injectable,
   InternalServerErrorException,
   Logger,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -43,12 +44,22 @@ export class AuthService {
     }
   }
 
+  async findOne(id: string): Promise<User> {
+    const user = this.userRepository.findOneBy({ id });
+
+    if (!user) {
+      throw new NotFoundException(`User with id "${id}" not found.`);
+    }
+
+    return user;
+  }
+
   async login(loginUserDTO: LoginUserDTO) {
     const { password, email } = loginUserDTO;
 
     const user = await this.userRepository.findOne({
       where: { email },
-      select: { id: true, email: true },
+      select: { id: true, email: true, password: true },
     });
 
     if (!user || !bcrypt.compareSync(password, user.password)) {

@@ -20,6 +20,9 @@ export class MessagesGateway
   constructor(private readonly messagesService: MessagesService) {}
 
   handleConnection(client: Socket) {
+    const token = client.handshake.headers.authentication as string;
+    const payload = this.messagesService.verifyJwt(token, client);
+
     this.messagesService.registerClient(client);
 
     this.webSocketServer.emit(
