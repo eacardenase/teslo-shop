@@ -30,6 +30,8 @@ export class MessagesService {
       throw new Error(`User with id ${userId} is not active.`);
     }
 
+    this.checkUserConnection(userId);
+
     this.connectedClients[client.id] = { socket: client, user };
   }
 
@@ -45,6 +47,18 @@ export class MessagesService {
     const { firstName } = this.connectedClients[socketId].user;
 
     return firstName;
+  }
+
+  private checkUserConnection(userId: string) {
+    for (const clientId of Object.keys(this.connectedClients)) {
+      const connectedClient = this.connectedClients[clientId];
+
+      if (connectedClient.user.id === userId) {
+        connectedClient.socket.disconnect();
+
+        break;
+      }
+    }
   }
 
   verifyJwt(token: string, client: Socket): JWTPayload {
