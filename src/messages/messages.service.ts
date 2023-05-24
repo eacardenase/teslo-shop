@@ -2,11 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 import { Socket } from 'socket.io';
+
 import { AuthService } from 'src/auth/auth.service';
+import { User } from 'src/auth/entities/user.entity';
 import { JWTPayload } from 'src/auth/interfaces';
 
 interface IConnectedClients {
-  [id: string]: Socket;
+  [id: string]: {
+    socket: Socket;
+    user: User;
+  };
 }
 
 @Injectable()
@@ -18,8 +23,14 @@ export class MessagesService {
     private readonly authService: AuthService,
   ) {}
 
-  registerClient(client: Socket) {
-    this.connectedClients[client.id] = client;
+  async registerClient(client: Socket, userId: string) {
+    const user = await this.authService.findOne(userId);
+
+    if (!user.isActive) {
+      throw new Error(`User with id ${userId} is not active.`);
+    }
+
+    this.connectedClients[client.id] = { socket: client, user };
   }
 
   removeClient(clientId: string) {
@@ -30,13 +41,17 @@ export class MessagesService {
     return Object.keys(this.connectedClients);
   }
 
+  getUserFullName(socketId: string): string {
+    const { firstName } = this.connectedClients[socketId].user;
+
+    return firstName;
+  }
+
   verifyJwt(token: string, client: Socket): JWTPayload {
     let payload: JWTPayload;
 
     try {
       payload = this.jwtService.verify(token);
-
-      console.log({ payload });
 
       return payload;
     } catch (error) {

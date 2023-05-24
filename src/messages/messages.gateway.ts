@@ -19,11 +19,19 @@ export class MessagesGateway
 
   constructor(private readonly messagesService: MessagesService) {}
 
-  handleConnection(client: Socket) {
+  async handleConnection(client: Socket) {
     const token = client.handshake.headers.authentication as string;
     const payload = this.messagesService.verifyJwt(token, client);
 
-    this.messagesService.registerClient(client);
+    try {
+      await this.messagesService.registerClient(client, payload.id);
+    } catch (error) {
+      console.log(error);
+
+      client.disconnect();
+
+      return;
+    }
 
     this.webSocketServer.emit(
       'clients-updated',
@@ -44,7 +52,7 @@ export class MessagesGateway
   handleMessageFromClient(client: Socket, payload: NewMessageDto) {
     // Emits to all clients connected
     this.webSocketServer.emit('message-from-server', {
-      fullName: 'Soy io',
+      fullName: this.messagesService.getUserFullName(client.id),
       message: payload.message || 'No Message',
     });
 
